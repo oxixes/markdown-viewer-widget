@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<widget xmlns="http://wirecloud.conwet.fi.upm.es/ns/macdescription/1" vendor="CoNWeT" name="markdown-viewer" version="0.1.2">
+<widget xmlns="http://wirecloud.conwet.fi.upm.es/ns/macdescription/1" vendor="CoNWeT" name="markdown-viewer" version="0.2.0">
+    <macversion>2</macversion>
 
     <details>
         <title>Markdown viewer widget</title>
@@ -35,5 +36,11 @@
 
     <contents src="index.html" useplatformstyle="true" />
     <rendering height="300px" width="30%"/>
+
+    <scripts>
+        <script src="lib/js/marked.min.js"/>
+        <script src="lib/js/highlight.pack.js"/>
+        <script src="js/MarkdownViewer.js"/>
+    </scripts>
 
 </widget>

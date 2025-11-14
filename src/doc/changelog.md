@@ -1,3 +1,7 @@
+## v0.2.0
+
+- Updated to macversion 2
+
 ## v0.1.2
 
 - Added syntax highlight support

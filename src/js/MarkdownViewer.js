@@ -6,10 +6,9 @@
  * Licensed under the Apache-2.0 license.
  */
 
-/* globals marked StyledElements hljs*/
-/* exported MarkdownViewer */
+/* globals marked hljs Wirecloud */
 
-window.MarkdownViewer = (function () {
+(function () {
 
     "use strict";
 
@@ -17,9 +16,13 @@ window.MarkdownViewer = (function () {
     // CLASS DEFINITION
     // =========================================================================
 
-    var MarkdownViewer = function MarkdownViewer() {
-        this.element = document.getElementById("markdown");
-        this.property = MashupPlatform.widget.getVariable('initialMarkdownValue');
+    var MarkdownViewer = function MarkdownViewer(MashupPlatform, shadowDOM, extra) {
+        this.MashupPlatform = MashupPlatform;
+        this.shadowDOM = shadowDOM;
+        this.StyledElements = extra.StyledElements;
+
+        this.element = this.shadowDOM.getElementById("markdown");
+        this.property = this.MashupPlatform.widget.getVariable('initialMarkdownValue');
 
         // Allow links to be clicked
         var markdown_renderer = new marked.Renderer();
@@ -38,6 +41,7 @@ window.MarkdownViewer = (function () {
             out += 'target="_blank"> ' + text + '</a>';
             return out;
         };
+
         marked.setOptions({
             xhtml: true,
             renderer: markdown_renderer,
@@ -64,10 +68,10 @@ window.MarkdownViewer = (function () {
         }.bind(this));
 
         // Create editor button if current user is the workspace owner
-        if (MashupPlatform.context.get('username') === MashupPlatform.mashup.context.get("owner")) {
-            var editbtn = new StyledElements.Button({'class': 'btn-info fa fa-edit fade', 'title': 'Open editor'});
+        if (this.MashupPlatform.context.get('username') === this.MashupPlatform.mashup.context.get("owner")) {
+            var editbtn = new this.StyledElements.Button({'class': 'btn-info fa fa-edit fade', 'title': 'Open editor'});
             editbtn.addEventListener("click", this.createEditorWidget.bind(this));
-            editbtn.insertInto(document.body);
+            editbtn.insertInto(this.shadowDOM.querySelector("body"));
         }
     };
 
@@ -76,15 +80,16 @@ window.MarkdownViewer = (function () {
         this.element.innerHTML = marked(value);
 
         // Store the new value
-        if (MashupPlatform.prefs.get("save")) {
+        if (this.MashupPlatform.prefs.get("save")) {
             this.property.set(value);
         }
     };
 
     MarkdownViewer.prototype.createEditorWidget = function createEditorWidget(event) {
         if (this.editorInput == null) {
-            this.editorInput = MashupPlatform.widget.createOutputEndpoint();
+            this.editorInput = this.MashupPlatform.widget.createOutputEndpoint();
         }
+
         if (this.editorWidget == null) {
             var options = {
                 title: "Markdown Editor",
@@ -94,8 +99,8 @@ window.MarkdownViewer = (function () {
             };
 
             // Create editor widget and bind its output
-            this.editorWidget = MashupPlatform.mashup.addWidget('CoNWeT/markdown-editor/0.1.0', options);
-            MashupPlatform.widget.inputs.input.connect(this.editorWidget.outputs.output);
+            this.editorWidget = this.MashupPlatform.mashup.addWidget('CoNWeT/markdown-editor/0.2.0', options);
+            this.MashupPlatform.widget.inputs.input.connect(this.editorWidget.outputs.output);
 
             // Bind remove event
             this.editorWidget.addEventListener("remove", function () {
@@ -109,12 +114,6 @@ window.MarkdownViewer = (function () {
     }
 
 
-    /* test-code */
-    MarkdownViewer.prototype = {
-    };
-
-    /* end-test-code */
-
-    return MarkdownViewer;
+    Wirecloud.registerWidgetClass(document.currentScript, MarkdownViewer);
 
 })();
