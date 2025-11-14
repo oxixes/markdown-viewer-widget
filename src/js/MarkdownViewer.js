@@ -99,7 +99,7 @@
             };
 
             // Create editor widget and bind its output
-            this.editorWidget = this.MashupPlatform.mashup.addWidget('CoNWeT/markdown-editor/0.2.0', options);
+            this.editorWidget = this.MashupPlatform.mashup.addWidget('CoNWeT/markdown-editor/0.1.2', options);
             this.MashupPlatform.widget.inputs.input.connect(this.editorWidget.outputs.output);
 
             // Bind remove event
